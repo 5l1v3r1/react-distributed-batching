@@ -114,11 +114,19 @@ var DistributedBatchingStrategy = {
         });
 
         // Count how many updates we estimate to be able to finish within the frame budget
+        var count;
+        var thisTotal;
+        var update;
         var totalEstimatedUpdateTime = 0;
-        for (var count = 0; count < this.pendingUpdates.length; count++) {
-            var update = this.pendingUpdates[count];
-            var thisTotal = totalEstimatedUpdateTime + update.component._estimatedUpdateTime;
-            if (thisTotal < this.frameBudget) {
+        var nPendingUpdates = this.pendingUpdates.length;
+
+        for (count = 0; count < nPendingUpdates; count++) {
+            update = this.pendingUpdates[count];
+            if (!update.component._hasUpdateEstimation) {
+                break;
+            }
+            thisTotal = totalEstimatedUpdateTime + update.component._estimatedUpdateTime;
+            if (thisTotal <= this.frameBudget) {
                 totalEstimatedUpdateTime = thisTotal;
             } else {
                 break;
