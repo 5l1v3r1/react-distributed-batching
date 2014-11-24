@@ -126,11 +126,10 @@ var DistributedBatchingStrategy = {
                 break;
             }
             thisTotal = totalEstimatedUpdateTime + update.component._estimatedUpdateTime;
-            if (thisTotal <= this.frameBudget) {
-                totalEstimatedUpdateTime = thisTotal;
-            } else {
+            if (thisTotal > this.frameBudget) {
                 break;
             }
+            totalEstimatedUpdateTime = thisTotal;
         }
 
         // Splice from pending since we will perform these updates separately
